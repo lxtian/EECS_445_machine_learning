@@ -249,6 +249,43 @@ def performance_CI(clf, X, y, metric="accuracy"):
 
     return perf, lower, upper  
  
+def alternative_method():
+        
+    import preprocess as pr
+    pr.initStopWords('stopwords')
+
+    pr.stemWords(pr.removeStopwords(pr.tokenizeText(open('held_out_tweets.txt').read())))
+
+    dictionary = extract_dictionary('tweets.txt')
+    X = extract_feature_vectors('tweets.txt', dictionary)
+    y = read_vector_file('labels.txt')
+    
+def compress(token):
+    ''' 
+    Given a word of the form like awesooomeeeea, return awesoomee
+    Basically, contract a word of 3 or more to 2
+    '''
+    p = None
+    i_start = i_end = p_end = 0
+    indexs = []
+    for i in range(len(token)):
+        if token[i] != p:
+            i_end = i
+            p = token[i]
+            if i_end - i_start >= 3: # the 3 is deliberately put
+                indexs.append((p_end, i_start))
+                p_end = i_end
+            i_start = i
+
+    if i_end != i and i - i_start >= 2: # deliberately put 2
+        indexs.append((p_end,i_start))
+    else:
+        indexs.append((p_end,i+1))
+    res = ""
+    for pe,s in indexs:
+        res += token[pe:s+2]
+    return res
+
 def main():
     """**TO COMPLETE**"""
     # Read the tweets and its labels   
@@ -286,4 +323,6 @@ def main():
     print perf, lower, upper
     # Appy your best classifier to the held_out_tweets.txt
 
-main()
+if __name__ == '__main__':
+    pass
+    #main()
