@@ -1,0 +1,1 @@
+pr.stemWords(pr.removeStopwords(pr.tokenizeText(open('held_out_tweets.txt').read())))
